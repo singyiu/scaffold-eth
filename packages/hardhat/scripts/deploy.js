@@ -11,6 +11,7 @@ const main = async () => {
 
 
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
+  const lmContract = await deploy("LmContract") // <-- add in constructor args like line 16 vvvv
 
 
 

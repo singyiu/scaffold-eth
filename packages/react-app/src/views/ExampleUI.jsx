@@ -1,14 +1,48 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import React, { useState } from "react";
-import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
+import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin, notification } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import { ethers } from "ethers";
+import { abi as IErc20 } from './abis/erc20.json'
+import { parseUnits, formatUnits } from "@ethersproject/units";
 
-export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, signer, daiContract }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const [approving, setApproving] = useState(false)
+
+  const approve = async (_amount) => {
+    console.log("approving",_amount)
+    try {
+    setApproving(true)
+    //let tokenContract = new ethers.Contract(assetData.tokenAddress, IErc20, signer);
+    let tokenContract = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", IErc20, signer);
+    //let tokenContract = daiContract;
+    //let address = await signer.getAddress()
+    let amountToApprove = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
+    console.log("amountToApprove",amountToApprove)
+    console.log("LmContract.address",writeContracts.LmContract.address)
+    let approval = await tokenContract.approve(writeContracts.LmContract.address, amountToApprove)
+    console.log('approval', approval)
+    setApproving(false)
+    notification.open({
+      message: 'Token transfer approved',
+      description:
+      `Aave can now move up to ${formatUnits(amountToApprove,18)} DAI`,
+    }) } catch (e) {
+      console.log(e)
+      setApproving(false)
+      notification.open({
+        message: 'Approval failed',
+        description:
+        `DAI approval did not take place`,
+      })
+    }
+    //getTokenBalance()
+  }
 
   return (
     <div>
@@ -21,6 +55,37 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         <h4>purpose: {purpose}</h4>
 
         <Divider/>
+
+        <div style={{margin:8}}>
+          <Button loading={approving} onClick={()=>{
+            approve("1")
+          }}>approve</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            console.log("playStake")
+            let _amount = "1"
+            let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
+            tx( writeContracts.LmContract.playStake(bigAmount) )
+          }}>playStake</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            //console.log("approve 1 DAI",newPurpose)
+            //approve("1")
+            console.log("approveOne")
+            tx( daiContract.approve(writeContracts.LmContract.address, 1) )
+          }}>approveOne</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            console.log("playStakeOne")
+            tx( writeContracts.LmContract.playStakeOne() )
+          }}>playStakeOne</Button>
+        </div>
 
         <div style={{margin:8}}>
           <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />

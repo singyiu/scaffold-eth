@@ -96,6 +96,9 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
   //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
+  const localDAIContract = useExternalContractLoader(localProvider, DAI_ADDRESS, DAI_ABI)
+  const localADAIContract = useExternalContractLoader(localProvider, "0x028171bCA77440897B824Ca71D1c56caC55b68A3", DAI_ABI)
+
   //
   // Then read your DAI balance like:
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
@@ -185,17 +188,44 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
-            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
             <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
+              name="LmContract"
               signer={userProvider.getSigner()}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-            */ }
+
+            {/*
+              Uncomment to display and interact with an external contract (DAI on mainnet):
+              <Contract
+                name="DAI"
+                customContract={mainnetDAIContract}
+                signer={userProvider.getSigner()}
+                provider={mainnetProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              /
+            */}
+
+            <Contract
+              name="DAI Contract"
+              customContract={localDAIContract}
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="aDAI Contract"
+              customContract={localADAIContract}
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
           </Route>
           <Route path="/hints">
             <Hints
@@ -218,6 +248,8 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
             />
           </Route>
           <Route path="/subgraph">
