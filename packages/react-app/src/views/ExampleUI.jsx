@@ -59,32 +59,16 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         <div style={{margin:8}}>
           <Button loading={approving} onClick={()=>{
             approve("1")
-          }}>approve</Button>
+          }}>approve DAI</Button>
         </div>
 
         <div style={{margin:8}}>
           <Button onClick={()=>{
-            console.log("playStake")
+            console.log("play stakeAndCreateMembership")
             let _amount = "1"
             let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
-            tx( writeContracts.LmContract.playStake(bigAmount) )
-          }}>playStake</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            //console.log("approve 1 DAI",newPurpose)
-            //approve("1")
-            console.log("approveOne")
-            tx( daiContract.approve(writeContracts.LmContract.address, 1) )
-          }}>approveOne</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            console.log("playStakeOne")
-            tx( writeContracts.LmContract.playStakeOne() )
-          }}>playStakeOne</Button>
+            tx( writeContracts.LmContract.stakeAndCreateMembership("0x6506Ddf82E3eC3712842AF424D0e7aE1d82227c7", "tit01", "des01", "image", "link", bigAmount) )
+          }}>play stakeAndCreateMembership</Button>
         </div>
 
         <div style={{margin:8}}>
@@ -95,7 +79,6 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
             tx( writeContracts.YourContract.setPurpose(newPurpose) )
           }}>Set Purpose</Button>
         </div>
-
 
         <Divider />
 
