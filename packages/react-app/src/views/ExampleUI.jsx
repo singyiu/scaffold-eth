@@ -44,6 +44,16 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
     //getTokenBalance()
   }
 
+  const getMyMembershipProgramIdList = async() => {
+    let res = await writeContracts.LmContract.getMyMembershipProgramIdList()
+    console.log("getMyMembershipProgramIdList", res);
+  }
+
+  const getMyUserMembershipIdList = async() => {
+    let res = await writeContracts.LmContract.getMyUserMembershipIdList()
+    console.log("getMyUserMembershipIdList", res);
+  }
+
   return (
     <div>
       {/*
@@ -64,11 +74,38 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
 
         <div style={{margin:8}}>
           <Button onClick={()=>{
-            console.log("play stakeAndCreateMembership")
+            console.log("stakeAndCreateMembership")
             let _amount = "1"
             let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
             tx( writeContracts.LmContract.stakeAndCreateMembership("0x6506Ddf82E3eC3712842AF424D0e7aE1d82227c7", "tit01", "des01", "image", "link", bigAmount) )
-          }}>play stakeAndCreateMembership</Button>
+          }}>stakeAndCreateMembership</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            console.log("stakeAndJoinMembership")
+            tx( writeContracts.LmContract.stakeAndJoinMembership(1) )
+          }}>stakeAndJoinMembership</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            getMyMembershipProgramIdList()
+          }}>getMyMembershipProgramIdList</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            getMyUserMembershipIdList()
+          }}>getMyUserMembershipIdList</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            console.log("withdrawAndUnsubscribeFromMembership")
+            tx( writeContracts.LmContract.withdrawAndUnsubscribeFromMembership(1) )
+            //writeContracts.LmContract.withdrawAndUnsubscribeFromMembership(1)
+          }}>withdrawAndUnsubscribeFromMembership</Button>
         </div>
 
         <div style={{margin:8}}>
