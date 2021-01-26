@@ -2,11 +2,11 @@
 pragma solidity ^0.6.8;
 
 import "hardhat/console.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; //"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "./ILendingPool.sol";
 
-contract LmContract {
+contract LmContract is Ownable {
     IERC20 dai = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F); //mainnet
     IERC20 aDai = IERC20(0x028171bCA77440897B824Ca71D1c56caC55b68A3); //mainnet
     ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
@@ -59,7 +59,7 @@ contract LmContract {
     event UnStakeEvent(uint amount); //withdraw from pool
     event YieldCollectEvent(uint amount);
 
-    constructor() public { //TODO: add owner
+    constructor() public {
         lastYieldCollectedAt = block.timestamp;
     }
 
@@ -147,7 +147,7 @@ contract LmContract {
         emit UnStakeEvent(originalStakePrice);
     }
 
-    function collectYield() external { //TODO: owneronly
+    function collectYield() external { //onlyOwner
         uint totalStake = allMembershipStakeSum + allCreateMStakeSum;
         uint aDaiBalance = aDai.balanceOf(address(this));
         if (aDaiBalance > totalStake) {
