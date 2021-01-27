@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, ServiceProvider } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -172,6 +172,9 @@ function App(props) {
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
+          <Menu.Item key="/serviceprovider">
+            <Link onClick={()=>{setRoute("/serviceprovider")}} to="/serviceprovider">ServiceProvider</Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -260,6 +263,23 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             />
           </Route>
+          <Route path="/serviceprovider">
+            <ServiceProvider
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
+            />
+          </Route>          
         </Switch>
       </BrowserRouter>
 
