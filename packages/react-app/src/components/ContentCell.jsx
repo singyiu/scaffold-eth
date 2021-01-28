@@ -5,9 +5,10 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import Avatar from '@material-ui/core/Avatar';
 import 'semantic-ui-css/semantic.min.css';
 import { Grid, Container, Header, Button, Icon, Popup, Modal, Image, Form } from 'semantic-ui-react';
-//import Chance from 'chance';
-//import Moment from 'react-moment';
-//const chance = new Chance()
+import { ethers } from "ethers";
+import { abi as IErc20 } from '../views/abis/erc20.json'
+import { parseUnits, formatUnits } from "@ethersproject/units";
+import { notification } from "antd";
 
 const useStyles = makeStyles({
     root: {
@@ -51,22 +52,72 @@ const AddButton = (props) => {
 };
 
 const AddMPButton = (props) => {
+    let createMStakePrice = "1"
     const [open, setOpen] = useState(false)
     const [daiApproved, setDaiApproved] = useState(false)
+    const [approving, setApproving] = useState(false)
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [imageUrl, setImageUrl] = useState('')
     const [linkUrl, setLinkUrl] = useState('')
     const [stakePrice, setStakePrice] = useState('')
-
-    const funcApproveDai = (amountStr) => {
-        setDaiApproved(true)
-    };
+    const [isCreating, setIsCreating] = useState(false)
 
     const funcOnOpen = () => {
         setOpen(true)
         setDaiApproved(false)
+        setApproving(false)
+        setStakePrice('')
+        setIsCreating(false)
     };
+
+    const approve = async (_amount) => {
+      console.log("approving",_amount)
+      try {
+      setApproving(true)
+      let tokenContract = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", IErc20, props.signer);
+      let amountToApprove = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
+      console.log("amountToApprove",amountToApprove)
+      console.log("LmContract.address",props.writeContracts.LmContract.address)
+      let approval = await tokenContract.approve(props.writeContracts.LmContract.address, amountToApprove)
+      console.log('approval', approval)
+      setApproving(false)
+      setDaiApproved(true)
+      notification.open({
+        message: 'Token transfer approved',
+        description:
+        `Dropletpool can now move up to ${formatUnits(amountToApprove,18)} DAI`,
+      }) } catch (e) {
+        console.log(e)
+        setApproving(false)
+        setDaiApproved(false)
+        notification.open({
+          message: 'Approval failed',
+          description:
+          `DAI approval did not take place`,
+        })
+      }
+    }
+    
+    const stakeAndCreateMembership = async (_amount) => {
+        console.log("stakeAndCreateMembership")
+        setIsCreating(true)
+        try {
+            let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
+            await props.tx( props.writeContracts.LmContract.stakeAndCreateMembership("0x6506Ddf82E3eC3712842AF424D0e7aE1d82227c7", title, description, imageUrl, linkUrl, bigAmount) )
+            notification.open({
+                message: 'stakeAndCreateMembership succeed',
+                description: `Membership program ${title} created`,
+            })
+            setOpen(false)
+        } catch (e) {
+            notification.open({
+                message: 'stakeAndCreateMembership failed',
+                description: `stakeAndCreateMembership did not take place`,
+            })
+        }
+        setIsCreating(false)
+    }
 
     return (
         <Modal
@@ -100,25 +151,26 @@ const AddMPButton = (props) => {
               </Form.Field>
               <Form.Field>
                 <label>Stake Price</label>
-                <input placeholder='Amount of DAI that user need to stake to join' onChange={e => setStakePrice(e.target.value)} />
+                <input placeholder='Amount of DAI that user need to stake to join' disabled={daiApproved} onChange={e => setStakePrice(e.target.value)} />
               </Form.Field>
             </Form>  
             <div style={{width:600}}>
-            <pre>{JSON.stringify({ title, description }, null, null)}</pre>
+            {/* <pre>{JSON.stringify({ title, description }, null, null)}</pre> */}
             </div>
           </Modal.Description>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='black' onClick={() => funcApproveDai(stakePrice)}>
-            Approve {stakePrice} DAI
+          <Button color='orange' disabled={daiApproved | !stakePrice} loading={approving} onClick={() => approve(createMStakePrice)}>
+            {daiApproved ? 'Approved' : 'Approve'} {createMStakePrice} DAI
           </Button>
           <Button
             content="Create"
             labelPosition='right'
             icon='checkmark'
-            onClick={() => setOpen(false)}
             positive
             disabled={!daiApproved}
+            loading={isCreating}
+            onClick={() => stakeAndCreateMembership(stakePrice)}
           />
         </Modal.Actions>
       </Modal>

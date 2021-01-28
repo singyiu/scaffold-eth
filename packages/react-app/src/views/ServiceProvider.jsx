@@ -9,7 +9,7 @@ export default function ServiceProvider({purpose, setPurposeEvents, address, mai
         <ContentCell
         imageUrl="addButton.png"
         />
-        <AddMPButton/>
+        <AddMPButton writeContracts={writeContracts} signer={signer} tx={tx}/>
         </div>
     );
 }
