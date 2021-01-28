@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import React, { useState, useEffect } from "react";
-import { ContentCell, AddMPButton } from '../components/ContentCell'
+import { MpCell, AddMPButton } from '../components/ContentCell'
 import { notification } from "antd";
 
-export default function ServiceProvider({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, signer, daiContract, mpIds }) {
+export default function ServiceProvider({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, signer, daiContract, serviceProviderMpIds }) {
 
     {/*
     const [mpIds, setMpIds] = useState();
@@ -27,13 +27,18 @@ export default function ServiceProvider({purpose, setPurposeEvents, address, mai
         getMyMembershipProgramIdList()
     });
     */}
-    
+
     return (
         <div>
-        <ContentCell
-        imageUrl="addButton.png"
-        />
-        <AddMPButton writeContracts={writeContracts} signer={signer} tx={tx}/>
+            {serviceProviderMpIds ? serviceProviderMpIds.map((mpId) => {
+              return (
+                <MpCell
+                readContracts={readContracts}
+                mpId={mpId}
+                />
+              )
+            }) : null}
+            <AddMPButton writeContracts={writeContracts} signer={signer} tx={tx}/>
         </div>
     );
 }

@@ -112,8 +112,8 @@ function App(props) {
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   //console.log("📟 SetPurpose events:",setPurposeEvents)
 
-  const mpIds = useContractReader(readContracts,"LmContract", "getMyMembershipProgramIdList")
-  //console.log("🤗 mpIds:",mpIds)
+  const serviceProviderMpIds = useContractReader(readContracts,"LmContract", "getMembershipProgramIdList", [address])
+  console.log("🤗 serviceProviderMpIds:",serviceProviderMpIds)
   const numOfMP = useContractReader(readContracts,"LmContract", "numOfMP")
   console.log("🤗 numOfMP:",numOfMP)
 
@@ -284,7 +284,7 @@ function App(props) {
               setPurposeEvents={setPurposeEvents}
               signer={userProvider.getSigner()}
               daiContract={localDAIContract}
-              mpIds={mpIds}
+              serviceProviderMpIds={serviceProviderMpIds}
               numOfMP={numOfMP}
             />
           </Route>          

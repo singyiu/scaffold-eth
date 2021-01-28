@@ -9,6 +9,7 @@ import { ethers } from "ethers";
 import { abi as IErc20 } from '../views/abis/erc20.json'
 import { parseUnits, formatUnits } from "@ethersproject/units";
 import { notification } from "antd";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
 
 const useStyles = makeStyles({
     root: {
@@ -177,7 +178,18 @@ const AddMPButton = (props) => {
     );
 };
 
+const MpCell = (props) => {
+    const classes = useStyles();
+    const mp = useContractReader(props.readContracts,"LmContract", "mpMap", [props.mpId])
+
+    return (
+        <div>
+            <Avatar alt="Avatar" src={mp ? mp.imageUrl : null} className={classes.bigAvatar} onClick={props.playFunc}/>
+        </div>
+    );
+};
+
 export {
-    ContentCell,
     AddMPButton,
+    MpCell,
 };
