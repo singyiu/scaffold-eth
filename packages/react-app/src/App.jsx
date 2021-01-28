@@ -106,11 +106,17 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  //console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  //console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  const mpIds = useContractReader(readContracts,"LmContract", "getMyMembershipProgramIdList")
+  //console.log("🤗 mpIds:",mpIds)
+  const numOfMP = useContractReader(readContracts,"LmContract", "numOfMP")
+  console.log("🤗 numOfMP:",numOfMP)
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -278,6 +284,8 @@ function App(props) {
               setPurposeEvents={setPurposeEvents}
               signer={userProvider.getSigner()}
               daiContract={localDAIContract}
+              mpIds={mpIds}
+              numOfMP={numOfMP}
             />
           </Route>          
         </Switch>
