@@ -1,17 +1,19 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+//import { useState, useEffect } from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 //import Badge from '@material-ui/core/Badge';
-import Avatar from '@material-ui/core/Avatar';
+//import Avatar from '@material-ui/core/Avatar';
 import 'semantic-ui-css/semantic.min.css';
-import { Grid, Container, Header, Button, Icon, Popup, Modal, Image, Form, Card, Label } from 'semantic-ui-react';
+import { Grid, Button, Icon, Modal, Image, Form, Card, Label } from 'semantic-ui-react';
 import { ethers } from "ethers";
 import { abi as IErc20 } from '../views/abis/erc20.json'
 import { parseUnits, formatUnits } from "@ethersproject/units";
 import { notification } from "antd";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
+import { useContractReader } from "../hooks";
+//import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
 
-{/*
+/*
 root: {
   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   border: 0,
@@ -21,7 +23,7 @@ root: {
   height: 48,
   padding: '0 30px',
 },
-*/}
+*/
 
 function openUrlInNewWindow(url) {
   const win = window.open(url, '_blank');
@@ -47,6 +49,7 @@ const useStyles = makeStyles({
     }
 });
 
+/*
 const ContentCell = (props) => {
     const classes = useStyles();
     return (
@@ -56,17 +59,7 @@ const ContentCell = (props) => {
         </div>
     );
 };
-
-const AddButton = (props) => {
-    const classes = useStyles();
-    return (
-        <div>
-            <Popup content='Add new membership program' trigger={
-            <Button circular color='green' icon='add' size='massive' onClick={props.playFunc}/>
-            } />
-        </div>
-    );
-};
+*/
 
 const AddMPButton = (props) => {
     let createMStakePrice = "1"
@@ -201,6 +194,8 @@ const MpCell = (props) => {
     const [isDaiApproved, setIsDaiApproved] = useState(false)
     const [isDaiApproving, setIsDaiApproving] = useState(false)
     const [isJoining, setIsJoining] = useState(false)
+    const [isUnsubscribing, setIsUnsubscribing] = useState(false)
+    const isUserAMember = useContractReader(props.readContracts,"LmContract", "isUserAMember", [props.address, props.mpId])
 
     const approveDai = async (_amount) => {
       console.log("approveDai",_amount)
@@ -236,6 +231,7 @@ const MpCell = (props) => {
                 message: 'stakeAndJoinMembership succeed',
                 description: `Membership program ${mp.title} joined`,
             })
+            setIsDaiApproved(false)
             setIsPicked(false)
         } catch (e) {
             notification.open({
@@ -246,6 +242,25 @@ const MpCell = (props) => {
         setIsJoining(false)
     }
 
+    const withdrawAndUnsubscribeFromMembership = async () => {
+        console.log("withdrawAndUnsubscribeFromMembership")
+        setIsUnsubscribing(true)
+        try {
+            await props.tx( props.writeContracts.LmContract.withdrawAndUnsubscribeFromMembership(props.mpId) )
+            notification.open({
+                message: 'withdrawAndUnsubscribeFromMembership succeed',
+                description: `Membership program ${mp.title} unsubscribed`,
+            })
+            setIsPicked(false)
+        } catch (e) {
+            notification.open({
+                message: 'withdrawAndUnsubscribeFromMembership failed',
+                description: `withdrawAndUnsubscribeFromMembership did not take place`,
+            })
+        }
+        setIsUnsubscribing(false)
+    }
+
     return (
         <div className={classes.cardPadding}>
         {mp ?
@@ -254,7 +269,7 @@ const MpCell = (props) => {
               <Card.Content>
                 <Card.Header>{mp.title}</Card.Header>
                 <Card.Meta>
-                  <span className='date'>Joined in 2015</span>
+                  <span className='date'>2021</span>
                 </Card.Meta>
                 <Card.Description>
                   {mp.description}
@@ -263,38 +278,44 @@ const MpCell = (props) => {
               <Card.Content extra>
                 <Grid columns={2}>
                 <Grid.Column>
-                    <Button as='div' labelPosition='right' onClick={() => openUrlInNewWindow(mp.linkUrl)}>
-                      <Button color='red'><Icon name='user' /></Button>
-                      <Label as='a' basic color='red' pointing='left'>{mp.numOfMembers.toString()}</Label>
+                    <Button size='large' as='div' labelPosition='right' onClick={() => openUrlInNewWindow(mp.linkUrl)}>
+                      <Button size='large' color='black'><Icon name='user' /></Button>
+                      <Label as='a' basic color='black' pointing='left'>{mp.numOfMembers.toString()}</Label>
                     </Button>
                 </Grid.Column>
                 <Grid.Column>
-                    <Button as='div' labelPosition='right' onClick={() => setIsPicked(!isPicked)}>
-                      <Button color='green'><Icon name='dollar' /></Button>
-                      <Label as='a' basic color='green' pointing='left'>{formatUnits(mp.stakePrice,18)}</Label>
+                    <Button size='large' as='div' labelPosition='right' onClick={() => setIsPicked(!isPicked)}>
+                      <Button size='large' color='blue'><Icon name='dollar' /></Button>
+                      <Label as='a' basic color='blue' pointing='left'>{formatUnits(mp.stakePrice,18)}</Label>
                     </Button>
                 </Grid.Column>
-                {isPicked ? 
-                <Grid.Row>
+                </Grid>
+                {isPicked ?
+                <Grid>
+                {isUserAMember ?
+                    <Grid.Row columns={1}>
+                    <Grid.Column>
+                        <Button size='large' content="Unsubscribe" labelPosition='right' icon='user times' negative disabled={isUnsubscribing} loading={isUnsubscribing}
+                          onClick={() => withdrawAndUnsubscribeFromMembership()}
+                        />
+                    </Grid.Column>
+                    </Grid.Row>     
+                :
+                <Grid.Row columns={2}>
                 <Grid.Column>
-                    <Button color='orange' disabled={isDaiApproved} loading={isDaiApproving} onClick={() => approveDai(mp.stakePrice)}>
+                    <Button size='tiny' color='orange' disabled={isDaiApproved} loading={isDaiApproving} onClick={() => approveDai(mp.stakePrice)}>
                       {isDaiApproved ? 'Approved' : 'Approve'} {formatUnits(mp.stakePrice,18)} DAI
                     </Button>
                 </Grid.Column>
                 <Grid.Column>
-                    <Button
-                      content="Join"
-                      labelPosition='right'
-                      icon='checkmark'
-                      positive
-                      disabled={!isDaiApproved}
-                      loading={isJoining}
+                    <Button size='large' content="Join" labelPosition='right' icon='checkmark' positive disabled={!isDaiApproved} loading={isJoining}
                       onClick={() => stakeAndJoinMembership(mp.stakePrice)}
                     />
                 </Grid.Column>
-                </Grid.Row>
-                : null}
+                </Grid.Row> 
+                } 
                 </Grid>
+                : null}
               </Card.Content>
             </Card>
         : null }

@@ -38,10 +38,10 @@ contract LmContract is Ownable {
 
     mapping(uint256 => Membership) public mpMap; //map (membership.id) => (Membership program) for storing all membership programs
     mapping(uint256 => MembershipDetail) public mpDetailMap; //map (membership.id) => (Membership program private detail)
-    mapping(address => uint256[]) public mpListMap; //map (owner.address) => (array of membership.id created) for storing a list of membership program for each service provider, private
+    mapping(address => uint256[]) public mpListMap; //map (owner.address) => (array of membership.id created) for storing a list of membership program for each service provider
 
     mapping(address => mapping(uint256 => UserJoinDetail)) public ujMap; //map (user.address)(membership.id) => (UserJoinDetail)
-    mapping(address => uint256[]) public ujListMap; //map (user.address) => (array of membership.id joined) for storing a list of memberships for each user, private
+    mapping(address => uint256[]) public ujListMap; //map (user.address) => (array of membership.id joined) for storing a list of memberships for each user
 
     uint256 public createMStakePrice = 1e18; //amount a service provider need to stake to create one membership program
     uint256 public numOfMP = 0; //membership programs counter
@@ -194,8 +194,8 @@ contract LmContract is Ownable {
     function collectYield() external {
         //onlyOwner
         uint256 totalStake = allMembershipStakeSum + allCreateMStakeSum;
-        uint256 aDaiBalance = aDai.balanceOf(address(this));
-        if (aDaiBalance > totalStake) {
+        uint256 currentADaiBalance = aDai.balanceOf(address(this));
+        if (currentADaiBalance > totalStake) {
             uint256 totalYield = aDai.balanceOf(address(this)) - totalStake;
             require(aDai.approve(address(pool), totalYield)); //approve the totalYield to be withdraw by the pool
             //loop through each active membership program, calculate and transfer the yield

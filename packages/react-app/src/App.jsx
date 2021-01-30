@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph, ServiceProvider } from "./views"
+import { Hints, ExampleUI, Subgraph, ServiceProvider, Member } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -34,23 +34,23 @@ import { Hints, ExampleUI, Subgraph, ServiceProvider } from "./views"
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
-const DEBUG = true
+const DEBUG = false
 
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
 // 🛰 providers
-if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
+//if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
-console.log("window.location.hostname",window.location.hostname)
+//console.log("window.location.hostname",window.location.hostname)
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = "http://"+window.location.hostname+":8545"; // for xdai: https://dai.poa.network
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
+//if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 
@@ -113,9 +113,10 @@ function App(props) {
   //console.log("📟 SetPurpose events:",setPurposeEvents)
 
   const serviceProviderMpIds = useContractReader(readContracts,"LmContract", "getMembershipProgramIdList", [address])
-  console.log("🤗 serviceProviderMpIds:",serviceProviderMpIds)
+  //console.log("🤗 serviceProviderMpIds:",serviceProviderMpIds)
   const numOfMP = useContractReader(readContracts,"LmContract", "numOfMP")
-  console.log("🤗 numOfMP:",numOfMP)
+  //console.log("🤗 numOfMP:",numOfMP)
+  
 
 
   /*
@@ -180,6 +181,9 @@ function App(props) {
           </Menu.Item>
           <Menu.Item key="/serviceprovider">
             <Link onClick={()=>{setRoute("/serviceprovider")}} to="/serviceprovider">ServiceProvider</Link>
+          </Menu.Item>
+          <Menu.Item key="/member">
+            <Link onClick={()=>{setRoute("/member")}} to="/member">Member</Link>
           </Menu.Item>
         </Menu>
 
@@ -271,6 +275,25 @@ function App(props) {
           </Route>
           <Route path="/serviceprovider">
             <ServiceProvider
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
+              serviceProviderMpIds={serviceProviderMpIds}
+              numOfMP={numOfMP}
+            />
+          </Route>          
+          <Route path="/member">
+            <Member
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
