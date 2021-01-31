@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Discord = require('discord.js');
 var express = require('express');
 var app = express();
@@ -56,5 +57,5 @@ var server = app.listen(port, function () {
    var port = server.address().port
 
    console.log("app listening at http://%s:%s", host, port)
-   client.login('ODA1MTM4OTYxNTAzNjE3MDg1.YBWiFw.bigFRJ84yQNhhWN6PSv6VKSxi7Q');
+   client.login(process.env.DROPLETPOOL_APP_TOKEN);
 })
