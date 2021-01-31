@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph, ServiceProvider, Member } from "./views"
+import { Hints, ExampleUI, Subgraph, ServiceProvider, Member, DiscordBot } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -32,6 +32,7 @@ import { Hints, ExampleUI, Subgraph, ServiceProvider, Member } from "./views"
     (and then use the `useExternalContractLoader()` hook!)
 */
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+//import DiscordBot from "./DiscordBot";
 
 // 😬 Sorry for all the console logging 🤡
 const DEBUG = false
@@ -310,6 +311,10 @@ function App(props) {
               serviceProviderMpIds={serviceProviderMpIds}
               numOfMP={numOfMP}
             />
+          </Route>
+          <Route path="/discordbot/:targetMpId/:guildId/:userId/:roleId" render={(props) => (
+            <DiscordBot {...props} address={address} readContracts={readContracts} />
+          )}>
           </Route>          
         </Switch>
       </BrowserRouter>
@@ -399,5 +404,7 @@ const logoutOfWeb3Modal = async () => {
     window.location.reload();
   }, 1);
 };
+
+//DiscordBot();
 
 export default App;

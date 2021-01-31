@@ -38,6 +38,7 @@
     "axios": "^0.20.0",
     "bnc-notify": "^1.5.0",
     "burner-provider": "^1.0.38",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
     "graphiql": "^1.0.5",
