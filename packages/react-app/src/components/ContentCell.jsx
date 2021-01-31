@@ -264,60 +264,61 @@ const MpCell = (props) => {
     return (
         <div className={classes.cardPadding}>
         {mp ?
-            <Card>
-              <Image src={mp.imageUrl} wrapped ui={false} />
-              <Card.Content>
-                <Card.Header>{mp.title}</Card.Header>
-                <Card.Meta>
-                  <span className='date'>2021</span>
-                </Card.Meta>
-                <Card.Description>
-                  {mp.description}
-                </Card.Description>
-              </Card.Content>
-              <Card.Content extra>
-                <Grid columns={2}>
-                <Grid.Column>
-                    <Button size='large' as='div' labelPosition='right' onClick={() => openUrlInNewWindow(mp.linkUrl)}>
-                      <Button size='large' color='black'><Icon name='user' /></Button>
-                      <Label as='a' basic color='black' pointing='left'>{mp.numOfMembers.toString()}</Label>
-                    </Button>
-                </Grid.Column>
-                <Grid.Column>
-                    <Button size='large' as='div' labelPosition='right' onClick={() => setIsPicked(!isPicked)}>
-                      <Button size='large' color='blue'><Icon name='dollar' /></Button>
-                      <Label as='a' basic color='blue' pointing='left'>{formatUnits(mp.stakePrice,18)}</Label>
-                    </Button>
-                </Grid.Column>
-                </Grid>
-                {isPicked ?
-                <Grid>
-                {isUserAMember ?
-                    <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <Button size='large' content="Unsubscribe" labelPosition='right' icon='user times' negative disabled={isUnsubscribing} loading={isUnsubscribing}
-                          onClick={() => withdrawAndUnsubscribeFromMembership()}
-                        />
-                    </Grid.Column>
-                    </Grid.Row>     
-                :
-                <Grid.Row columns={2}>
-                <Grid.Column>
-                    <Button size='tiny' color='orange' disabled={isDaiApproved} loading={isDaiApproving} onClick={() => approveDai(mp.stakePrice)}>
-                      {isDaiApproved ? 'Approved' : 'Approve'} {formatUnits(mp.stakePrice,18)} DAI
-                    </Button>
-                </Grid.Column>
-                <Grid.Column>
-                    <Button size='large' content="Join" labelPosition='right' icon='checkmark' positive disabled={!isDaiApproved} loading={isJoining}
-                      onClick={() => stakeAndJoinMembership(mp.stakePrice)}
-                    />
-                </Grid.Column>
-                </Grid.Row> 
-                } 
-                </Grid>
-                : null}
-              </Card.Content>
-            </Card>
+              <Card>
+                  <Image src={mp.imageUrl} wrapped ui={false} as='a' centered href={mp.linkUrl} target='_blank' />
+                    <Card.Content>
+                      <Card.Header>{mp.title}</Card.Header>
+                      <Card.Meta>
+                        <span className='date'>2021</span>
+                      </Card.Meta>
+                      <Card.Description>
+                        {mp.description}
+                      </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                      <Grid columns={2}>
+                      <Grid.Column>
+                          <Button size='large' as='div' labelPosition='right' onClick={() => openUrlInNewWindow(mp.linkUrl)}>
+                            <Button size='large' color='pink'><Icon name='user' /></Button>
+                            <Label as='a' basic color='pink' pointing='left'>{mp.numOfMembers.toString()}</Label>
+                          </Button>
+                      </Grid.Column>
+                      <Grid.Column>
+                          <Button size='large' as='div' labelPosition='right' onClick={() => setIsPicked(!isPicked)}>
+                            <Button size='large' color='blue'><Icon name='dollar' /></Button>
+                            <Label as='a' basic color='blue' pointing='left'>{formatUnits(mp.stakePrice,18)}</Label>
+                          </Button>
+                      </Grid.Column>
+                      </Grid>
+                      {isPicked ?
+                      <Grid>
+                      {isUserAMember ?
+                          <Grid.Row columns={1}>
+                          <Grid.Column>
+                              <Button size='large' content="Unsubscribe" labelPosition='right' icon='user times' negative disabled={isUnsubscribing} loading={isUnsubscribing}
+                                onClick={() => withdrawAndUnsubscribeFromMembership()}
+                              />
+                          </Grid.Column>
+                          </Grid.Row>     
+                      :
+                      <Grid.Row columns={2}>
+                      <Grid.Column>
+                          <Button size='tiny' color='orange' disabled={isDaiApproved} loading={isDaiApproving} onClick={() => approveDai(mp.stakePrice)}>
+                            {isDaiApproved ? 'Approved' : 'Approve'} {formatUnits(mp.stakePrice,18)} DAI
+                          </Button>
+                      </Grid.Column>
+                      <Grid.Column>
+                          <Button size='large' content="Join" labelPosition='right' icon='checkmark' positive disabled={!isDaiApproved} loading={isJoining}
+                            onClick={() => stakeAndJoinMembership(mp.stakePrice)}
+                          />
+                      </Grid.Column>
+                      </Grid.Row> 
+                      } 
+                      </Grid>
+                      : null}
+                    </Card.Content>
+                  </Card>
+
         : null }
         </div>
     );

@@ -3,6 +3,7 @@ import {
   YourContract,
   SetPurpose
 } from "../generated/YourContract/YourContract"
+import { LmContract,MembershipUnsubscribeEvent } from "../generated/LmContract/LmContract"
 import { Purpose, Sender } from "../generated/schema"
 
 export function handleSetPurpose(event: SetPurpose): void {
@@ -31,4 +32,9 @@ export function handleSetPurpose(event: SetPurpose): void {
   purpose.save()
   sender.save()
 
+}
+
+export function handleMembershipUnsubscribeEvent(event: MembershipUnsubscribeEvent): void {
+  console.log('handleMembershipUnsubscribeEvent', handleMembershipUnsubscribeEvent)
+  
 }

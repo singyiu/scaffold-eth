@@ -9,6 +9,7 @@ const prefix = '!';
 const targetMpId = '1';
 const port = 4000;
 const vipRoleId = process.env.VIP_ROLE_ID;
+var userAddressDict = {};
 
 client.once('ready', () => {
     console.log("DiscordBot is ready");
@@ -21,27 +22,37 @@ client.on('message', (message) => {
     const command = args.shift().toLowerCase();
 
     if (command === 'join'){
+        message.channel.send('To authenticate, please open this url with the wallet that you had used to join the membership')
         message.channel.send('http://localhost:3000/discordbot/' + targetMpId + '/' + message.member.guild.id + '/' + message.member.user.id + '/' + vipRoleId);
     }
 });
 
-app.post('/addrole/:guildid/:userid/:roleid', function (req, res) {
-    const guildid = req.params.guildid;
-    const userid = req.params.userid;
-    const roleid = req.params.roleid;
+app.post('/addrole/:mpId/:userAddress/:guildId/:userId/:roleId', function (req, res) {
+    const mpId = req.params.mpId;
+    const userAddress = req.params.userAddress;
+    const guildId = req.params.guildId;
+    const userId = req.params.userId;
+    const roleId = req.params.roleId;
 
-    client.guilds.cache.get(guildid).members.cache.get(userid).roles.add(roleid).catch(console.error);
-    console.log('addrole', guildid, userid, roleid);
+    const userAddressObj = {'mpId': mpId, 'guildId': guildId, 'userId': userId, 'roleId': roleId};
+    userAddressDict[userAddress] = userAddressObj;
+
+    client.guilds.cache.get(guildId).members.cache.get(userId).roles.add(roleId).catch(console.error);
+    console.log('addrole', mpId, userAddress, guildId, userId, roleId);
     res.send('ok');
 })
 
-app.post('/removerole/:guildid/:userid/:roleid', function (req, res) {
-    const guildid = req.params.guildid;
-    const userid = req.params.userid;
-    const roleid = req.params.roleid;
-
-    client.guilds.cache.get(guildid).members.cache.get(userid).roles.remove(roleid).catch(console.error);
-    console.log('removerole', guildid, userid, roleid);
+app.post('/removerole/:mpId/:userAddress', function (req, res) {
+    const userAddress = req.params.userAddress;
+    const userAddressObj = userAddressDict[userAddress];
+    if (userAddressObj) {
+        delete userAddressDict.userAddress;
+        const guildId = userAddressObj.guildId;
+        const userId = userAddressObj.userId;
+        const roleId = userAddressObj.roleId;
+        client.guilds.cache.get(guildId).members.cache.get(userId).roles.remove(roleId).catch(console.error);
+        console.log('removerole', guildId, userId, roleId);
+    }
     res.send('ok');
 })
 

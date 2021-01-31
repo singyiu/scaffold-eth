@@ -10,6 +10,7 @@ export default function ServiceProvider({purpose, setPurposeEvents, address, mai
 
     return (
         <Container>
+            <div style={{height:24}}></div>
             <Card.Group centered itemsPerRow={4}>
             {serviceProviderMpIds ? serviceProviderMpIds.map((mpId) => {
               return (
@@ -25,6 +26,7 @@ export default function ServiceProvider({purpose, setPurposeEvents, address, mai
               )
             }) : null}
             </Card.Group>
+            <div style={{height:24}}></div>
             <Container>
             <AddMPButton writeContracts={writeContracts} signer={signer} tx={tx}/>
             </Container>

@@ -313,7 +313,7 @@ function App(props) {
             />
           </Route>
           <Route path="/discordbot/:targetMpId/:guildId/:userId/:roleId" render={(props) => (
-            <DiscordBot {...props} address={address} readContracts={readContracts} />
+            <DiscordBot {...props} address={address} readContracts={readContracts} localProvider={localProvider} />
           )}>
           </Route>          
         </Switch>
@@ -404,7 +404,5 @@ const logoutOfWeb3Modal = async () => {
     window.location.reload();
   }, 1);
 };
-
-//DiscordBot();
 
 export default App;

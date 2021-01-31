@@ -50,6 +50,12 @@
         "internalType": "uint256",
         "name": "mId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       }
     ],
     "name": "MembershipUnsubscribeEvent",

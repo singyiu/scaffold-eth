@@ -55,7 +55,7 @@ contract LmContract is Ownable {
 
     event MembershipCreateEvent(uint256 mId, address owner, string title); //a new membership program is created
     event MembershipJoinEvent(uint256 mId); //user join a membership program
-    event MembershipUnsubscribeEvent(uint256 mId); //user unsubscribe a membership program
+    event MembershipUnsubscribeEvent(uint256 mId, address userAddress); //user unsubscribe a membership program
     event StakeEvent(uint256 amount); //deposit to pool
     event UnStakeEvent(uint256 amount); //withdraw from pool
     event YieldCollectEvent(uint256 amount);
@@ -120,14 +120,6 @@ contract LmContract is Ownable {
         return mId;
     }
 
-    /*
-    function withdrawAndDisableMembership(uint _mId) external {
-        Membership memory m = mpMap[_mId];
-        require(m.owner == msg.sender, "Not owner of the target membership program");
-    }
-    //setCreateMembershipProgramStakePrice
-    */
-
     function stakeAndJoinMembership(uint256 _mId) external {
         Membership memory m = mpMap[_mId];
         require(m.isActive, "Target membership is inactive"); //require target membership to be active
@@ -187,12 +179,13 @@ contract LmContract is Ownable {
         ); //approve pool to consume aDAI from this contract
         pool.withdraw(address(dai), originalStakePrice, msg.sender); //withdraw DAI from pool and transfer to user
 
-        emit MembershipUnsubscribeEvent(_mId);
+        emit MembershipUnsubscribeEvent(_mId, msg.sender);
         emit UnStakeEvent(originalStakePrice);
     }
 
-    function collectYield() external {
-        //onlyOwner
+    //TODO: add function for deactivating a membership program
+
+    function collectYield() external onlyOwner {
         uint256 totalStake = allMembershipStakeSum + allCreateMStakeSum;
         uint256 currentADaiBalance = aDai.balanceOf(address(this));
         if (currentADaiBalance > totalStake) {

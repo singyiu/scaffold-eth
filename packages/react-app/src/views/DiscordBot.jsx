@@ -2,9 +2,10 @@
 
 //import _ from 'lodash'
 import React from "react";
-//import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Label, Icon } from 'semantic-ui-react';
 import { useContractReader } from "../hooks";
+//import { useEventListener } from "../hooks";
 import axios from "axios";
 
 export default function DiscordBot(props) {
@@ -13,34 +14,57 @@ export default function DiscordBot(props) {
     const userId = props.match.params.userId;
     const roleId = props.match.params.roleId;
     const address = props.address;
-    //console.log("userId", userId)
-    //console.log("targetMpId", targetMpId)
-    //console.log("address", address);
 
+    const [isAddRoleDone, setIsAddRoleDone] = useState(false)
+    const [isRemoveRoleDone, setIsRemoveRoleDone] = useState(false)
     const isUserAMember = useContractReader(props.readContracts,"LmContract", "isUserAMember", [address, targetMpId])
-    //console.log("isUserAMember", isUserAMember);
 
-    const postAddRoleRequestIfMember = (_isUserAMember) => {
-        if (isUserAMember) {
-            const response = axios.post('http://localhost:4000/addrole/' + guildId + '/' + userId + '/' + roleId)
-            console.log('postAddRoleRequestIfMember', response.data)
-        }
-        return isUserAMember
+    const postAddRoleRequest = () => {
+        axios.post('http://localhost:4000/addrole/' + targetMpId + '/' + address + '/' + guildId + '/' + userId + '/' + roleId).catch(console.error)
+        setIsAddRoleDone(true)
     }
-    const isAuthenticated = postAddRoleRequestIfMember(isUserAMember)
-    console.log("isAuthenticated", isAuthenticated);
+
+    const postRemoveRoleRequest = () => {
+        axios.post('http://localhost:4000/removerole/' + targetMpId + '/' + address).catch(console.error)
+        setIsRemoveRoleDone(true)
+    }
+
+    /*
+    const processMembershipUnsubscribeEvent = async (_event) => {
+        if (_event[0]) {
+          //console.log("processMembershipUnsubscribeEvent", _event)
+          //console.log("processMembershipUnsubscribeEvent len", _event.length)
+          //console.log("processMembershipUnsubscribeEvent event0", _event[0])
+          //console.log("processMembershipUnsubscribeEvent mId", _event[0].mId)
+          //console.log("processMembershipUnsubscribeEvent userAddress", _event[0].userAddress)
+          const response = axios.post('http://localhost:4000/removerole/1/' + _event[0].userAddress)
+          console.log('postRemoveRoleRequest', response.data)
+        }
+    }
+    const membershipUnsubscribeEvent = useEventListener(readContracts, "LmContract", "MembershipUnsubscribeEvent", localProvider, 1)
+    processMembershipUnsubscribeEvent(membershipUnsubscribeEvent)
+    */
+
+    useEffect(() => {
+        if (isUserAMember && !isAddRoleDone) {
+            postAddRoleRequest()
+        }
+        if (isAddRoleDone && !isUserAMember && !isRemoveRoleDone) {
+            postRemoveRoleRequest()
+        }
+    })
 
     return (
         <Container>
         <Container style={{height:200}}></Container>
         <Container>
-            {isAuthenticated ?
+            {(isUserAMember && isAddRoleDone) ?
                 <Label size='massive' color='green'>Authenticated. VIP roles added to your Discord user
                 <span>&nbsp;&nbsp;</span>
                 <Icon name='checkmark' />
                 </Label>
             :
-                <Label size='massive' color='orange'>To authenticate, Please connect with the wallet that you had used to join the membership
+                <Label size='massive' color='orange'>To authenticate, please connect with the wallet that you had used to join the membership
                 <span>&nbsp;&nbsp;</span>
                 <Icon name='address card' />
                 </Label>
