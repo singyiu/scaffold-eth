@@ -8,7 +8,7 @@ const client = new Discord.Client();
 const prefix = '!';
 const targetMpId = '1';
 const port = 4000;
-const vipRoleId = '805245913525780500';
+const vipRoleId = process.env.VIP_ROLE_ID;
 
 client.once('ready', () => {
     console.log("DiscordBot is ready");
@@ -23,18 +23,11 @@ client.on('message', (message) => {
     if (command === 'join'){
         message.channel.send('http://localhost:3000/discordbot/' + targetMpId + '/' + message.member.guild.id + '/' + message.member.user.id + '/' + vipRoleId);
     }
-    //console.log('message', message);
-    //console.log('message.member', message.member);
-    //console.log('message.member.guild.id', message.member.guild.id);
-    //console.log('message.member.user.id', message.member.user.id);
 });
 
 app.post('/addrole/:guildid/:userid/:roleid', function (req, res) {
-    //console.log("req", req);
     const guildid = req.params.guildid;
-    //console.log("guildId", guildId);
     const userid = req.params.userid;
-    //console.log("userId", userId);
     const roleid = req.params.roleid;
 
     client.guilds.cache.get(guildid).members.cache.get(userid).roles.add(roleid).catch(console.error);
