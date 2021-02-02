@@ -13,6 +13,8 @@ import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph, ServiceProvider, Member, DiscordBot } from "./views"
+import { Image } from 'semantic-ui-react';
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -165,9 +167,14 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
 
+      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 0, padding: 0 }}>
+          <Image src='dropletBeach.png'></Image>
+      </div>
+
       <BrowserRouter>
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+          {/*
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
@@ -180,11 +187,12 @@ function App(props) {
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
+          */}
           <Menu.Item key="/serviceprovider">
-            <Link onClick={()=>{setRoute("/serviceprovider")}} to="/serviceprovider">ServiceProvider</Link>
+            <Link onClick={()=>{setRoute("/serviceprovider")}} to="/serviceprovider">Register Service</Link>
           </Menu.Item>
           <Menu.Item key="/member">
-            <Link onClick={()=>{setRoute("/member")}} to="/member">Member</Link>
+            <Link onClick={()=>{setRoute("/member")}} to="/member">Memberships</Link>
           </Menu.Item>
         </Menu>
 
@@ -337,7 +345,8 @@ function App(props) {
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 50, padding: 10 }}>
+         {/*
          <Row align="middle" gutter={[4, 4]}>
            <Col span={8}>
              <Ramp price={price} address={address} />
@@ -361,7 +370,7 @@ function App(props) {
              </Button>
            </Col>
          </Row>
-
+              */}
          <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {
