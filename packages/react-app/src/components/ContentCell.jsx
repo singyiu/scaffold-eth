@@ -140,7 +140,7 @@ const AddMPButton = (props) => {
       >
         <Modal.Header>Add a new membership program</Modal.Header>
         <Modal.Content image>
-          <Image size='small' src='addButton.png' wrapped />
+          <Image size='medium' src='sunCloud.png' wrapped />
           <Modal.Description>            
             <Form>
               <Form.Field>
