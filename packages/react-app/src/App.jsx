@@ -168,7 +168,7 @@ function App(props) {
       <Header />
 
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 0, padding: 0 }}>
-          <Image src='dropletBeach.png'></Image>
+          <Image src='beach.png'></Image>
       </div>
 
       <BrowserRouter>
