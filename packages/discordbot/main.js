@@ -25,6 +25,8 @@ client.on('message', (message) => {
         message.channel.send('To authenticate, please open this url with the wallet that you had used to join the membership')
         message.channel.send('http://localhost:3000/discordbot/' + targetMpId + '/' + message.member.guild.id + '/' + message.member.user.id + '/' + vipRoleId);
     }
+    console.log("message.member.guild.id", message.member.guild.id)
+    console.log("message.member.user.id", message.member.user.id)
 });
 
 app.post('/addrole/:mpId/:userAddress/:guildId/:userId/:roleId', function (req, res) {
