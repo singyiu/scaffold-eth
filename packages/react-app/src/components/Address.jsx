@@ -26,7 +26,7 @@ export default function Address(props) {
   if (!props.value) {
     return (
       <span>
-        <Skeleton avatar paragraph={{ rows: 1 }} />
+        <Skeleton size='small' avatar paragraph={{ rows: 1 }} />
       </span>
     );
   }
@@ -55,7 +55,7 @@ export default function Address(props) {
   let text;
   if (props.onChange) {
     text = (
-      <Text editable={{ onChange: props.onChange }} copyable={{ text: props.value }}>
+      <Text size='small' editable={{ onChange: props.onChange }} copyable={{ text: props.value }}>
         <a style={{ color: "#222222" }} target={"_blank"} href={etherscanLink} rel="noopener noreferrer">
           {displayAddress}
         </a>
@@ -63,7 +63,7 @@ export default function Address(props) {
     );
   } else {
     text = (
-      <Text copyable={{ text: props.value }}>
+      <Text size='small' copyable={{ text: props.value }}>
         <a style={{ color: "#222222" }} target={"_blank"} href={etherscanLink} rel="noopener noreferrer">
           {displayAddress}
         </a>
@@ -76,7 +76,7 @@ export default function Address(props) {
       <span style={{ verticalAlign: "middle" }}>
         <Blockies seed={props.value.toLowerCase()} size={8} scale={props.fontSize?props.fontSize/7:4} />
       </span>
-      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize?props.fontSize:28 }}>{text}</span>
+      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize?props.fontSize:20 }}>{text}</span>
     </span>
   );
 }

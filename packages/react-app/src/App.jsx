@@ -116,12 +116,13 @@ function App(props) {
   //console.log("📟 SetPurpose events:",setPurposeEvents)
 
   const serviceProviderMpIds = useContractReader(readContracts,"LmContract", "getMembershipProgramIdList", [address])
-  //console.log("🤗 serviceProviderMpIds:",serviceProviderMpIds)
+  //console.log("serviceProviderMpIds:",serviceProviderMpIds)
   const numOfMP = useContractReader(readContracts,"LmContract", "numOfMP")
-  //console.log("🤗 numOfMP:",numOfMP)
+  //console.log("numOfMP:",numOfMP)
+  const allCreateMStakeSum = useContractReader(readContracts,"LmContract", "allCreateMStakeSum")
+  const allMembershipStakeSum = useContractReader(readContracts,"LmContract", "allMembershipStakeSum")
+  const numOfAllMembers = useContractReader(readContracts,"LmContract", "numOfAllMembers")
   
-
-
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -165,7 +166,7 @@ function App(props) {
     <div className="App">
 
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
+      <Header numOfAllMembers={numOfAllMembers ? numOfAllMembers : 0} allCreateMStakeSum={allCreateMStakeSum ? allCreateMStakeSum : 0} allMembershipStakeSum={allMembershipStakeSum ? allMembershipStakeSum : 0}/>
 
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 0, padding: 0 }}>
           <Image src='beach.png'></Image>
