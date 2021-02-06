@@ -12,7 +12,9 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, ServiceProvider, Member, DiscordBot } from "./views"
+import { Image } from 'semantic-ui-react';
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -32,25 +34,26 @@ import { Hints, ExampleUI, Subgraph } from "./views"
     (and then use the `useExternalContractLoader()` hook!)
 */
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+//import DiscordBot from "./DiscordBot";
 
 // 😬 Sorry for all the console logging 🤡
-const DEBUG = true
+const DEBUG = false
 
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
 // 🛰 providers
-if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
+//if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
-console.log("window.location.hostname",window.location.hostname)
+//console.log("window.location.hostname",window.location.hostname)
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = "http://"+window.location.hostname+":8545"; // for xdai: https://dai.poa.network
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
+//if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 
@@ -96,6 +99,9 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
   //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
+  const localDAIContract = useExternalContractLoader(localProvider, DAI_ADDRESS, DAI_ABI)
+  const localADAIContract = useExternalContractLoader(localProvider, "0x028171bCA77440897B824Ca71D1c56caC55b68A3", DAI_ABI)
+
   //
   // Then read your DAI balance like:
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
@@ -103,12 +109,20 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  //console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  //console.log("📟 SetPurpose events:",setPurposeEvents)
 
+  const serviceProviderMpIds = useContractReader(readContracts,"LmContract", "getMembershipProgramIdList", [address])
+  //console.log("serviceProviderMpIds:",serviceProviderMpIds)
+  const numOfMP = useContractReader(readContracts,"LmContract", "numOfMP")
+  //console.log("numOfMP:",numOfMP)
+  const allCreateMStakeSum = useContractReader(readContracts,"LmContract", "allCreateMStakeSum")
+  const allMembershipStakeSum = useContractReader(readContracts,"LmContract", "allMembershipStakeSum")
+  const numOfAllMembers = useContractReader(readContracts,"LmContract", "numOfAllMembers")
+  
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -131,6 +145,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = ""
+  {/*
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider.getSigner()&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
     faucetHint = (
@@ -147,16 +162,22 @@ function App(props) {
       </div>
     )
   }
+  */}
 
   return (
     <div className="App">
 
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
+      <Header numOfAllMembers={numOfAllMembers ? numOfAllMembers : 0} allCreateMStakeSum={allCreateMStakeSum ? allCreateMStakeSum : 0} allMembershipStakeSum={allMembershipStakeSum ? allMembershipStakeSum : 0}/>
+
+      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 0, padding: 0 }}>
+          <Image src='beach.png'></Image>
+      </div>
 
       <BrowserRouter>
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+          {/*
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
@@ -168,6 +189,13 @@ function App(props) {
           </Menu.Item>
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          </Menu.Item>
+          */}
+          <Menu.Item key="/serviceprovider">
+            <Link onClick={()=>{setRoute("/serviceprovider")}} to="/serviceprovider">Register Service</Link>
+          </Menu.Item>
+          <Menu.Item key="/member">
+            <Link onClick={()=>{setRoute("/member")}} to="/member">Memberships</Link>
           </Menu.Item>
         </Menu>
 
@@ -185,17 +213,44 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
-            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
             <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
+              name="LmContract"
               signer={userProvider.getSigner()}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-            */ }
+
+            {/*
+              Uncomment to display and interact with an external contract (DAI on mainnet):
+              <Contract
+                name="DAI"
+                customContract={mainnetDAIContract}
+                signer={userProvider.getSigner()}
+                provider={mainnetProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              /
+            */}
+
+            <Contract
+              name="DAI Contract"
+              customContract={localDAIContract}
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="aDAI Contract"
+              customContract={localADAIContract}
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
           </Route>
           <Route path="/hints">
             <Hints
@@ -218,6 +273,8 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
             />
           </Route>
           <Route path="/subgraph">
@@ -228,6 +285,48 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             />
           </Route>
+          <Route path="/serviceprovider">
+            <ServiceProvider
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
+              serviceProviderMpIds={serviceProviderMpIds}
+              numOfMP={numOfMP}
+            />
+          </Route>          
+          <Route path="/member">
+            <Member
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+              signer={userProvider.getSigner()}
+              daiContract={localDAIContract}
+              serviceProviderMpIds={serviceProviderMpIds}
+              numOfMP={numOfMP}
+            />
+          </Route>
+          <Route path="/discordbot/:targetMpId/:guildId/:userId/:roleId" render={(props) => (
+            <DiscordBot {...props} address={address} readContracts={readContracts} localProvider={localProvider} />
+          )}>
+          </Route>          
         </Switch>
       </BrowserRouter>
 
@@ -249,7 +348,8 @@ function App(props) {
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 50, padding: 10 }}>
+         {/*
          <Row align="middle" gutter={[4, 4]}>
            <Col span={8}>
              <Ramp price={price} address={address} />
@@ -273,7 +373,7 @@ function App(props) {
              </Button>
            </Col>
          </Row>
-
+              */}
          <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {

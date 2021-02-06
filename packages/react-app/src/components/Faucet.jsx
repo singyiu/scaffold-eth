@@ -21,15 +21,16 @@ export default function Faucet(props) {
   return (
     <span>
       <Input
-        size="large"
-        placeholder="local faucet"
+        bordered={false}
+        size="small"
+        placeholder=""
         prefix={blockie}
         value={address}
         onChange={e => {
           setAddress(e.target.value);
         }}
         suffix={
-          <Tooltip title="Faucet: Send local ether to an address.">
+          <Tooltip title="Faucet: Send local ether to an address" size='small'>
             <Button
               onClick={() => {
                 tx({
@@ -40,8 +41,9 @@ export default function Faucet(props) {
               }}
               shape="circle"
               icon={<SendOutlined />}
+              size='small'
             />
-            <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} />
+            <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} size='small'/>
           </Tooltip>
         }
       />
