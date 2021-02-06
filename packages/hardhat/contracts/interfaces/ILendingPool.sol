@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity >=0.6.0 <0.7.5;
+pragma solidity ^0.6.12;
 
 interface ILendingPool {
   function FLASHLOAN_PREMIUM_TOTAL() external view returns (uint256);

@@ -18,7 +18,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "kovan";
 
 function mnemonic() {
   try {
@@ -93,7 +93,7 @@ module.exports = {
     },
   },
   solidity: {
-    version: "0.6.8",
+    version: "0.6.12",
     settings: {
       optimizer: {
         enabled: true,

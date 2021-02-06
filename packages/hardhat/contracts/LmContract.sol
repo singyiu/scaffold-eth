@@ -1,16 +1,25 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity ^0.6.8;
+pragma solidity ^0.6.12;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; //"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
-import "./ILendingPool.sol";
+import "./interfaces/ILendingPool.sol";
+import "./interfaces/IProtocolDataProvider.sol";
 
 contract LmContract is Ownable {
-    IERC20 dai = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F); //mainnet
-    IERC20 aDai = IERC20(0x028171bCA77440897B824Ca71D1c56caC55b68A3); //mainnet
-    ILendingPool pool =
-        ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
+    //IERC20 dai = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F); //mainnet
+    //IERC20 aDai = IERC20(0x028171bCA77440897B824Ca71D1c56caC55b68A3); //mainnet
+    //ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9); //mainnet
+
+    //kovan
+    address daiAddress = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;
+    address protocolDataProviderAddress = 0x3c73A5E5785cAC854D468F727c606C07488a29D6;
+    address lendingPoolAddress = 0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe;
+
+    IProtocolDataProvider protocolDataProvider = IProtocolDataProvider(protocolDataProviderAddress);
+    IERC20 dai = IERC20(daiAddress);
+    ILendingPool pool = ILendingPool(lendingPoolAddress);
 
     struct Membership {
         address owner;
@@ -65,6 +74,8 @@ contract LmContract is Ownable {
     }
 
     function aDaiBalance() external view returns (uint256) {
+        (address aDaiAddress,,) = protocolDataProvider.getReserveTokensAddresses(daiAddress);
+        IERC20 aDai = IERC20(aDaiAddress);
         return aDai.balanceOf(address(this));
     }
 
@@ -173,6 +184,8 @@ contract LmContract is Ownable {
         }
 
         //N.B. approving aDai but withdraw dai from pool
+        (address aDaiAddress,,) = protocolDataProvider.getReserveTokensAddresses(daiAddress);
+        IERC20 aDai = IERC20(aDaiAddress);
         require(
             aDai.approve(address(pool), originalStakePrice),
             "approve aDAI for stake pool failed"
@@ -187,6 +200,8 @@ contract LmContract is Ownable {
 
     function collectYield() external onlyOwner {
         uint256 totalStake = allMembershipStakeSum + allCreateMStakeSum;
+        (address aDaiAddress,,) = protocolDataProvider.getReserveTokensAddresses(daiAddress);
+        IERC20 aDai = IERC20(aDaiAddress);
         uint256 currentADaiBalance = aDai.balanceOf(address(this));
         if (currentADaiBalance > totalStake) {
             uint256 totalYield = aDai.balanceOf(address(this)) - totalStake;
