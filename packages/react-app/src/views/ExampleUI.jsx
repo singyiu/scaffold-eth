@@ -8,6 +8,7 @@ import { parseEther, formatEther } from "@ethersproject/units";
 import { ethers } from "ethers";
 import { abi as IErc20 } from './abis/erc20.json'
 import { parseUnits, formatUnits } from "@ethersproject/units";
+import { DAI_ADDRESS, DROPLETPOOL_BENEFICIARY_ADDRESS } from "../constants";
 
 export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, signer, daiContract }) {
 
@@ -18,10 +19,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
     console.log("approving",_amount)
     try {
     setApproving(true)
-    //let tokenContract = new ethers.Contract(assetData.tokenAddress, IErc20, signer);
-    let tokenContract = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", IErc20, signer);
-    //let tokenContract = daiContract;
-    //let address = await signer.getAddress()
+    let tokenContract = new ethers.Contract(DAI_ADDRESS, IErc20, signer);
     let amountToApprove = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
     console.log("amountToApprove",amountToApprove)
     console.log("LmContract.address",writeContracts.LmContract.address)
@@ -77,7 +75,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
             console.log("stakeAndCreateMembership")
             let _amount = "1"
             let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
-            tx( writeContracts.LmContract.stakeAndCreateMembership("0x6506Ddf82E3eC3712842AF424D0e7aE1d82227c7", "tit01", "des01", "image", "link", bigAmount) )
+            tx( writeContracts.LmContract.stakeAndCreateMembership(DROPLETPOOL_BENEFICIARY_ADDRESS, "tit01", "des01", "image", "link", bigAmount) )
           }}>stakeAndCreateMembership</Button>
         </div>
 

@@ -3,14 +3,14 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Menu } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Header, Account, Faucet, Contract } from "./components";
 import { Transactor } from "./helpers";
-import { formatEther, parseEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph, ServiceProvider, Member, DiscordBot } from "./views"
 import { Image } from 'semantic-ui-react';
@@ -33,7 +33,7 @@ import { Image } from 'semantic-ui-react';
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+import { INFURA_ID, DAI_ADDRESS, ADAI_ADDRESS, DAI_ABI } from "./constants";
 //import DiscordBot from "./DiscordBot";
 
 // 😬 Sorry for all the console logging 🤡
@@ -100,7 +100,7 @@ function App(props) {
   //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
   //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
   const localDAIContract = useExternalContractLoader(localProvider, DAI_ADDRESS, DAI_ABI)
-  const localADAIContract = useExternalContractLoader(localProvider, "0x028171bCA77440897B824Ca71D1c56caC55b68A3", DAI_ABI)
+  const localADAIContract = useExternalContractLoader(localProvider, ADAI_ADDRESS, DAI_ABI)
 
   //
   // Then read your DAI balance like:

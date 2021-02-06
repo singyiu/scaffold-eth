@@ -12,6 +12,7 @@ import { parseUnits, formatUnits } from "@ethersproject/units";
 import { notification } from "antd";
 import { useContractReader } from "../hooks";
 //import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
+import { DAI_ADDRESS, DROPLETPOOL_BENEFICIARY_ADDRESS } from "../constants";
 
 /*
 root: {
@@ -85,7 +86,7 @@ const AddMPButton = (props) => {
       console.log("approving",_amount)
       try {
       setApproving(true)
-      let tokenContract = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", IErc20, props.signer);
+      let tokenContract = new ethers.Contract(DAI_ADDRESS, IErc20, props.signer);
       let amountToApprove = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
       console.log("amountToApprove",amountToApprove)
       console.log("LmContract.address",props.writeContracts.LmContract.address)
@@ -114,7 +115,7 @@ const AddMPButton = (props) => {
         setIsCreating(true)
         try {
             let bigAmount = _amount==="0"?ethers.constants.MaxUint256:parseUnits(_amount,18)
-            await props.tx( props.writeContracts.LmContract.stakeAndCreateMembership("0x6506Ddf82E3eC3712842AF424D0e7aE1d82227c7", title, description, imageUrl, linkUrl, bigAmount) )
+            await props.tx( props.writeContracts.LmContract.stakeAndCreateMembership(DROPLETPOOL_BENEFICIARY_ADDRESS, title, description, imageUrl, linkUrl, bigAmount) )
             notification.open({
                 message: 'stakeAndCreateMembership succeed',
                 description: `Membership program ${title} created`,
@@ -201,7 +202,7 @@ const MpCell = (props) => {
       console.log("approveDai",_amount)
       try {
       setIsDaiApproving(true)
-      let tokenContract = new ethers.Contract("0x6B175474E89094C44Da98b954EedeAC495271d0F", IErc20, props.signer);
+      let tokenContract = new ethers.Contract(DAI_ADDRESS, IErc20, props.signer);
       let approval = await tokenContract.approve(props.writeContracts.LmContract.address, _amount)
       console.log('approval', approval)
       setIsDaiApproving(false)
