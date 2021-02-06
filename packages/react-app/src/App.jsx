@@ -145,6 +145,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = ""
+  {/*
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider.getSigner()&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
     faucetHint = (
@@ -161,6 +162,7 @@ function App(props) {
       </div>
     )
   }
+  */}
 
   return (
     <div className="App">

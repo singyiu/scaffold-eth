@@ -275,7 +275,7 @@ const MpCell = (props) => {
                         {mp.description}
                       </Card.Description>
                     </Card.Content>
-                    <Card.Content extra>
+                    <Card.Content extra style={isUserAMember ? {backgroundColor:'#1A1917'} : {backgroundColor:'#FFFFFF'}}>
                       <Grid columns={2}>
                       <Grid.Column>
                           <Button size='large' as='div' labelPosition='right' onClick={() => openUrlInNewWindow(mp.linkUrl)}>
